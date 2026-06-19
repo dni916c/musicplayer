@@ -1,0 +1,17 @@
+
+# Compiled binaries
+player
+practice
+practice_null
+practice_test
+
+# Object files and auto-generated dependency files
+*.o
+*.d
+
+# Generated test artifacts
+test.wav
+
+# Editor / OS noise
+.DS_Store
+*.swp
