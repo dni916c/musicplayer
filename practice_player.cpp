@@ -18,14 +18,21 @@ void data_callback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uin
    ma_decoder_read_pcm_frames(pDecoder, pOutput, frameCount, NULL);
 }
 
-int main()
+int main(int argc, char** argv)
 {
+   if(argc < 2){
+
+      printf("usage %s <audiofile>\n", argv[0]);
+      return -1;
+
+
+   }
    //open file once into a decoder, Init it to the same format we give
    // the device below
    ma_decoder decoder;
    ma_decoder_config decoderConfig = ma_decoder_config_init(ma_format_f32, 2, 48000);
 
-   if(ma_decoder_init_file("/home/ubuntu/TECHNOSOUND/practice_tracks/The Turtles, You Showed Me Live [vneA658BTJE].mp3",&decoderConfig, &decoder) != MA_SUCCESS ){
+   if(ma_decoder_init_file(argv[1],&decoderConfig, &decoder) != MA_SUCCESS ){
       printf("Could not open file\n");
       return -1;
    }
