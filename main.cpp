@@ -34,6 +34,22 @@ int main(){
 
    cout << "pause/next/tack name/quit"<<endl;
 
+   cout << "----Playlist----" << endl;
+
+   vector<Track> tracks = pl.allTracks();
+   cout << "Track count: " << tracks.size() << endl;
+   
+   for(size_t i = 0; i < tracks.size(); i++){
+
+      cout<< i << ": " <<tracks[i].name << endl;
+   }
+
+   if(!engine.load(pl.current().path)){
+
+      cout << "failed to load: " << pl.current().name << endl;
+   }
+
+
    string line;
    while(getline(cin, line)){
 

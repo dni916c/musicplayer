@@ -9,6 +9,7 @@
 #define _PLAYLIST_H
 
 #include <string>
+#include <vector>
 
 
 struct Track {
@@ -48,6 +49,9 @@ class Playlist{
       // the cursor's position as an integer.
       // useful for highlighting the playing row
       int currentIndex();
+      
+      //create a reading of the current directory
+      std::vector<Track> allTracks() const;
       
       // ================MOVING CURSOR=====================
       //advances the cursor forward

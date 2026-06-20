@@ -7,7 +7,7 @@
 #include <assert.h>
 #include <stdbool.h>
 #include "playlist.h"
-
+#include <vector>
 // ================READING/WRITING=====================
 //append the track to the back of the list
 void Playlist::add(const Track& t){
@@ -45,6 +45,20 @@ int Playlist::currentIndex(){
    return curIndex;
    
 }
+
+std::vector<Track> Playlist::allTracks() const{
+
+   std::vector<Track> out;
+   Node* p;
+   for(p = front_; p != nullptr; p = p->next){
+
+      out.push_back(p->track);
+   }
+
+   return out;
+
+}
+
 
 // ================MOVING CURSOR=====================
 //advances the cursor forward
