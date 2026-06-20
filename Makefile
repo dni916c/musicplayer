@@ -1,32 +1,50 @@
-CXX      := g++
-CXXFLAGS := -std=c++17 -O2 -Wall -Wextra -Ivendor -Isrc -MMD -MP
-LDFLAGS  := -lpthread -ldl -lm
+#------------------------------------------------------------------------------
+#  Makefile for TECHNOSOUND Music Player
+#
+#  make                 makes practice (miniaudio playback test)
+#  make test_playlist   makes the Playlist unit test
+#  make all             makes all executables and library objects
+#  make clean           removes all binaries and object files
+#  make checkPlaylist   runs test_playlist under valgrind for memory leaks
+#------------------------------------------------------------------------------
 
-BIN      := player
-SRC      := src/main.cpp src/audio_engine.cpp src/miniaudio_impl.cpp
-OBJ      := $(SRC:.cpp=.o)
-DEP      := $(OBJ:.o=.d)
+AUDIO_LIBS     = -lpthread -ldl -lm
+COMPILE        = g++ -std=c++17 -Wall -c
+LINK           = g++ -std=c++17 -Wall -o
+REMOVE         = rm -f
+MEMCHECK       = valgrind --leak-check=full
 
-.PHONY: all clean run
+# ----- executables ----------------------------------------------------------
 
-all: $(BIN)
+practice : practice_player.o
+	$(LINK) practice practice_player.o $(AUDIO_LIBS)
 
-$(BIN): $(OBJ)
-	$(CXX) $(OBJ) -o $@ $(LDFLAGS)
+test_playlist : test_playlist.o playlist.o
+	$(LINK) test_playlist test_playlist.o playlist.o
 
-# Compile each .cpp to its own .o. Because miniaudio_impl.o is separate, the
-# slow ~95k-line miniaudio build only reruns when miniaudio.h changes — your
-# own edits recompile in a fraction of a second.
-%.o: %.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+all : practice test_playlist audio_engine.o web_server.o
 
-# Pull in the auto-generated header dependencies (-MMD -MP above), so touching
-# audio_engine.h rebuilds the right objects and nothing stale slips through.
--include $(DEP)
+# ----- object files ---------------------------------------------------------
 
-clean:
-	rm -f $(OBJ) $(DEP) $(BIN)
+practice_player.o : practice_player.cpp miniaudio.h
+	$(COMPILE) practice_player.cpp
 
-# Usage: make run FILE=path/to/track.flac
-run: $(BIN)
-	./$(BIN) $(FILE)
+test_playlist.o : test_playlist.cpp playlist.h
+	$(COMPILE) test_playlist.cpp
+
+playlist.o : playlist.cpp playlist.h
+	$(COMPILE) playlist.cpp
+
+audio_engine.o : audio_engine.cpp audio_engine.h miniaudio.h
+	$(COMPILE) audio_engine.cpp
+
+web_server.o : web_server.cpp web_server.h
+	$(COMPILE) web_server.cpp
+
+# ----- utilities ------------------------------------------------------------
+
+clean :
+	$(REMOVE) practice test_playlist practice_player.o test_playlist.o playlist.o audio_engine.o web_server.o
+
+checkPlaylist : test_playlist
+	$(MEMCHECK) test_playlist
