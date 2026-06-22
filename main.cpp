@@ -3,10 +3,40 @@
 #include <cstdio>
 #include "audio_engine.h"
 #include "playlist.h"
+#include "library.h"
 
 using namespace std;
 
-int main(){
+int main(int argc, char** argv){
+
+   if(argc < 2){
+
+      cerr << "not enough arguments" << endl;
+      return 1;
+   }
+
+   Library lib;
+   lib.scan(argv[1]);
+
+   Playlist pl;
+
+   const std::vector<Track>& files = lib.tracks();
+      for(size_t i = 0; i < files.size(); i++){
+         pl.add(lib.at(i));
+      }
+
+   if(pl.isEmpty()){
+
+      fprintf(stderr, "Playlist is empty");
+   
+      return -1;
+   }
+
+
+   cout <<"---LIBRARY---" << endl;
+   for(size_t i = 0; i < files.size(); i++){
+      cout << files[i].name << endl;
+   }
 
    AudioEngine engine;
 
@@ -16,15 +46,6 @@ int main(){
       return 1;
    }
 
-   Playlist pl;
-    pl.add({"/home/ubuntu/TECHNOSOUND/practice_tracks/The Turtles Elenore 1968 [f09itrlXcic].mp3", "Song A"});
-    pl.add({"/home/ubuntu/TECHNOSOUND/practice_tracks/The Turtles, You Showed Me Live [vneA658BTJE].mp3", "Song B"});
-   if(pl.isEmpty()){
-
-      fprintf(stderr, "Playlist is empty");
-   
-      return -1;
-   }
 
    engine.load(pl.current().path);
 
@@ -41,7 +62,7 @@ int main(){
    
    for(size_t i = 0; i < tracks.size(); i++){
 
-      cout<< i << ": " <<tracks[i].name << endl;
+      cout<< i + 1 << ": " <<tracks[i].name << endl;
    }
 
    if(!engine.load(pl.current().path)){
