@@ -26,7 +26,6 @@ void Playlist::add(const Track& t){
       // empty list case, the new node is the entire list
       front_ = back_ = cursor_ = new_track;
       curIndex = 0;
-
    }
    length++;
 
@@ -63,15 +62,46 @@ std::vector<Track> Playlist::allTracks() const{
 // ================MOVING CURSOR=====================
 //advances the cursor forward
 void Playlist::next(){
-   cursor_ = cursor_->next;
-   curIndex++;
+
+   if(cursor_ == nullptr){
+
+      return ;
+   }
+   if(cursor_->next == nullptr){
+
+      cursor_->next = front_;
+      curIndex = 0;
+   }
+   else{
+
+      cursor_ = cursor_->next;
+      curIndex++;
+   }
+  
 }
 //advances the cursor to the previous track
 void Playlist::prev(){
-   cursor_= cursor_->prev;
-   curIndex--;
-}
+   
 
+   if(cursor_ == nullptr){
+
+      return;
+   }
+
+   if(cursor_->prev == nullptr){
+
+      cursor_ = back_;
+      curIndex = length - 1;
+   }
+   else{
+
+      cursor_= cursor_->prev;
+      curIndex--;
+
+   }
+
+}
+//jump to the specific given index
 void Playlist::jumpTo(size_t index){
 
    Node* p = front_;
