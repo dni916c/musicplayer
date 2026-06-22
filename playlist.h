@@ -10,14 +10,7 @@
 
 #include <string>
 #include <vector>
-
-
-struct Track {
-
-   std::string path;
-   std::string name;
-};
-
+#include "track.h"
 
 
 class Playlist{
