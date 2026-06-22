@@ -74,6 +74,14 @@ int main(int argc, char** argv){
    string line;
    while(getline(cin, line)){
 
+      if(engine.consumeFinished()){
+
+         pl.next();
+         engine.load(pl.current().path);
+         cout << "Now playing: " << pl.current().name << endl;
+
+      }
+
       if(line == "q"){
          break;
       }
