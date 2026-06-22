@@ -1,0 +1,2 @@
+require("diminv")
+print("hello")
