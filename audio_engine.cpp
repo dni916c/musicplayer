@@ -61,14 +61,14 @@ void AudioEngine::onRead(void* pOutput, ma_uint32 frameCount){
          frameCount * ma_get_bytes_per_frame(kFormat, kChannels);
       
       std::memset(pOutput, 0,bytes);//silence by default
-                                    //
-      if(!playing_.load(std::memory_order_relaxed)){
 
+      if(!playing_.load(std::memory_order_relaxed)){
          return;
       }
 
+      std::lock_guard<std::mutex> lock(decoderMutex_);
+      
       if(decoder_ == nullptr){
-
          return;
       }
 
@@ -99,7 +99,7 @@ bool AudioEngine::load(const std:: string& path){
 // cache the length(do it once for effeciency)
    ma_uint64 lenFrame= 0;
 
-   ma_decoder_get_cursor_in_pcm_frames(fresh, &lenFrame);
+   ma_decoder_get_length_in_pcm_frames(fresh, &lenFrame);
    durationSeconds_.store(static_cast<double>(lenFrame)/ kRate, 
                           std::memory_order_relaxed);
    ma_decoder* old = nullptr;
